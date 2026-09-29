@@ -1,0 +1,78 @@
+@model QuanLyThuVien.ViewModels.LoginViewModel
+@{
+    Layout = null; // No layout for login page
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - Quản Lý Thư Viện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <style>
+        body {
+            background-color: #f4f7f6;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 400px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            background: #fff;
+            padding: 30px;
+        }
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .login-header i {
+            font-size: 3rem;
+            color: #0d6efd;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <div class="login-header">
+            <i class="fas fa-book-reader"></i>
+            <h4>Quản Lý Thư Viện</h4>
+            <p class="text-muted">Đăng nhập hệ thống</p>
+        </div>
+        
+        @foreach (var k in new[] { "Error", "Success", "Info" })
+        {
+            if (TempData[k] is string m && !string.IsNullOrWhiteSpace(m))
+            {
+                <div class="alert @(k == "Error" ? "alert-danger" : k == "Success" ? "alert-success" : "alert-info") py-2">@m</div>
+            }
+        }
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <div class="mb-3">
+                <label asp-for="TenDangNhap" class="form-label">Tên đăng nhập</label>
+                <input asp-for="TenDangNhap" class="form-control" placeholder="Nhập tên đăng nhập" />
+                <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+            </div>
+            
+            <div class="mb-4">
+                <label asp-for="MatKhau" class="form-label">Mật khẩu</label>
+                <input asp-for="MatKhau" class="form-control" placeholder="Nhập mật khẩu" />
+                <span asp-validation-for="MatKhau" class="text-danger"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="fas fa-sign-in-alt me-2"></i> Đăng nhập
+            </button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

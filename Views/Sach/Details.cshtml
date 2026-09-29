@@ -1,0 +1,78 @@
+@model QuanLyThuVien.Models.Sach
+@{
+    ViewData["Title"] = Model.TenSach;
+    var role = Context.Session.GetInt32("UserRole");
+    bool isStaff = role == 1 || role == 2;
+    var dangGiu = (HashSet<int>)ViewData["DangGiu"]!;
+    bool conSach = Model.TrangThai && Model.SoLuongCon > 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="fas fa-book me-2 text-primary"></i> Chi Tiết Sách</h2>
+    @if (isStaff)
+    {
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.MaSach" class="btn btn-warning"><i class="fas fa-edit me-1"></i> Sửa</a>
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Danh sách</a>
+        </div>
+    }
+    else
+    {
+        <a asp-action="TraCuu" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Tra cứu</a>
+    }
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="book-cover @("c" + (Model.MaTheLoai % 5))" style="height:200px"><i class="fas fa-book fa-lg"></i></div>
+            <div class="card-body text-center">
+                @if (!Model.TrangThai) { <span class="badge bg-dark fs-6">Ngưng cho mượn</span> }
+                else if (conSach) { <span class="badge bg-success fs-6">Khả dụng — còn @Model.SoLuongCon/@Model.SoLuong cuốn</span> }
+                else { <span class="badge bg-danger fs-6">Hết sách</span> }
+
+                @if (role == 3)
+                {
+                    <div class="mt-3">
+                    @if (dangGiu.Contains(Model.MaSach))
+                    {
+                        <button class="btn btn-outline-secondary w-100" disabled><i class="fas fa-check me-1"></i> Đang mượn / chờ duyệt</button>
+                    }
+                    else if (!conSach)
+                    {
+                        <button class="btn btn-outline-secondary w-100" disabled><i class="fas fa-ban me-1"></i> Không khả dụng</button>
+                    }
+                    else
+                    {
+                        <form asp-controller="PhieuMuon" asp-action="DangKyMuon" method="post" onsubmit="return confirm('Gửi yêu cầu mượn cuốn sách này?');">
+                            <input type="hidden" name="maSach" value="@Model.MaSach" />
+                            <button type="submit" class="btn btn-primary w-100"><i class="fas fa-hand-holding me-1"></i> Mượn sách</button>
+                        </form>
+                    }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white"><h4 class="mb-0">@Model.TenSach</h4></div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Thể loại</span><span>@Model.TheLoai.TenTheLoai</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Nhà xuất bản</span><span>@Model.NhaXuatBan.TenNhaXuatBan</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Năm xuất bản</span><span>@(Model.NamXuatBan?.ToString() ?? "—")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Đơn giá</span><span>@Model.DonGia.ToString("N0") đ</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Vị trí kệ</span><span>@(Model.ViTriKeSach ?? "—")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Tổng số / Còn lại</span><span><strong>@Model.SoLuong</strong> / <strong class="@(Model.SoLuongCon == 0 ? "text-danger" : "text-success")">@Model.SoLuongCon</strong></span></li>
+                @if (isStaff)
+                {
+                    <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Số lượt mượn (đã duyệt)</span><span>@ViewData["LuotMuon"]</span></li>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.GhiChu))
+                {
+                    <li class="list-group-item"><div class="text-muted small">Ghi chú</div>@Model.GhiChu</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

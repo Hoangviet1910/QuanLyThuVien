@@ -1,0 +1,43 @@
+@model QuanLyThuVien.ViewModels.TaiKhoanFormViewModel
+@{ bool isEdit = Model.MaTaiKhoan > 0; }
+
+<div class="mb-3">
+    <label asp-for="TenDangNhap" class="form-label required"></label>
+    <input asp-for="TenDangNhap" class="form-control" />
+    <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="MatKhau" class="form-label @(isEdit ? "" : "required")"></label>
+    <input asp-for="MatKhau" type="password" class="form-control" autocomplete="new-password" placeholder="@(isEdit ? "Bỏ trống = giữ nguyên" : "")" />
+    <span asp-validation-for="MatKhau" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="HoTen" class="form-label required"></label>
+    <input asp-for="HoTen" class="form-control" />
+    <span asp-validation-for="HoTen" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="Email" class="form-label"></label>
+    <input asp-for="Email" class="form-control" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="VaiTro" class="form-label"></label>
+    @if (Model.LaBanDoc)
+    {
+        <input type="hidden" asp-for="VaiTro" />
+        <input class="form-control" value="Bạn đọc (gắn hồ sơ bạn đọc)" disabled />
+    }
+    else
+    {
+        <select asp-for="VaiTro" class="form-select">
+            <option value="1">Admin</option>
+            <option value="2">Thủ thư</option>
+        </select>
+    }
+    <span asp-validation-for="VaiTro" class="text-danger"></span>
+</div>
+<div class="form-check form-switch mb-3">
+    <input asp-for="TrangThai" class="form-check-input" role="switch" />
+    <label asp-for="TrangThai" class="form-check-label"></label>
+</div>

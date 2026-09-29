@@ -1,0 +1,24 @@
+@model QuanLyThuVien.Models.NhaXuatBan
+
+<div class="mb-3">
+    <label asp-for="TenNhaXuatBan" class="form-label required">Tên nhà xuất bản</label>
+    <input asp-for="TenNhaXuatBan" class="form-control" />
+    <span asp-validation-for="TenNhaXuatBan" class="text-danger"></span>
+</div>
+<div class="mb-3">
+    <label asp-for="DiaChi" class="form-label">Địa chỉ</label>
+    <input asp-for="DiaChi" class="form-control" />
+    <span asp-validation-for="DiaChi" class="text-danger"></span>
+</div>
+<div class="row">
+    <div class="col-md-6 mb-3">
+        <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
+        <input asp-for="SoDienThoai" class="form-control" />
+        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+    </div>
+    <div class="col-md-6 mb-3">
+        <label asp-for="Email" class="form-label">Email</label>
+        <input asp-for="Email" class="form-control" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+</div>

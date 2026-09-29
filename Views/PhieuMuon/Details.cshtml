@@ -1,0 +1,110 @@
+@model QuanLyThuVien.Models.PhieuMuon
+
+@{
+    ViewData["Title"] = $"Phiếu mượn #{Model.MaPhieuMuon}";
+    var role = Context.Session.GetInt32("UserRole");
+    bool isStaff = role == 1 || role == 2;
+    bool quaHan = Model.TrangThai == 1 && Model.HanTra < DateTime.Today;
+    int soNgayTre = Model.TrangThai == 1 ? Math.Max(0, (DateTime.Today - Model.HanTra.Date).Days) : Model.ChiTietMuons.Select(c => c.SoNgayQuaHan).DefaultIfEmpty(0).Max();
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="fas fa-file-lines me-2 text-primary"></i> Phiếu mượn #@Model.MaPhieuMuon <span class="ms-2 fs-6 align-middle"><partial name="_TrangThaiBadge" model="Model" /></span></h2>
+    @if (isStaff)
+    {
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Danh sách phiếu</a>
+    }
+    else
+    {
+        <a asp-action="LichSu" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Lịch sử mượn</a>
+    }
+</div>
+
+@if (quaHan)
+{
+    <div class="alert alert-danger"><i class="fas fa-exclamation-triangle me-2"></i>Phiếu đã <strong>quá hạn @soNgayTre ngày</strong>. Tiền phạt tạm tính: <strong>@((soNgayTre * 5000m * Model.ChiTietMuons.Sum(c => c.SoLuong)).ToString("N0")) VNĐ</strong> (5.000đ/ngày/cuốn).</div>
+}
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-white fw-bold"><i class="fas fa-circle-info me-2 text-primary"></i>Thông tin phiếu</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Bạn đọc</span><strong>@Model.BanDoc.HoTen</strong></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Số thẻ</span><span>#@Model.MaBanDoc</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Ngày mượn</span><span>@Model.NgayMuon.ToString("dd/MM/yyyy HH:mm")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Hạn trả</span><span class="@(quaHan ? "text-danger fw-bold" : "")">@Model.HanTra.ToString("dd/MM/yyyy")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Ngày trả</span><span>@(Model.NgayTra?.ToString("dd/MM/yyyy HH:mm") ?? "—")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Tiền phạt</span><span class="@(Model.TienPhat > 0 ? "text-danger fw-bold" : "")">@Model.TienPhat.ToString("N0") đ</span></li>
+                @if (isStaff)
+                {
+                    <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Nhân viên xử lý</span><span>@(Model.NguoiXuLy?.HoTen ?? "—")</span></li>
+                }
+                @if (!string.IsNullOrWhiteSpace(Model.GhiChu))
+                {
+                    <li class="list-group-item"><div class="text-muted small">Ghi chú</div>@Model.GhiChu</li>
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold"><i class="fas fa-book me-2 text-primary"></i>Danh sách sách (@Model.ChiTietMuons.Sum(c => c.SoLuong) cuốn)</div>
+            <form id="returnForm" asp-action="ReturnBooks" asp-route-id="@Model.MaPhieuMuon" asp-route-fromDetails="true" method="post"></form>
+            <div class="table-responsive">
+                <table class="table align-middle mb-0">
+                    <thead class="table-light">
+                        <tr><th>Tên sách</th><th class="text-center">SL</th><th>Tình trạng mượn</th><th>Tình trạng trả</th><th class="text-center">Ngày trễ</th><th class="text-end">Phạt</th></tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var c in Model.ChiTietMuons)
+                        {
+                            <tr>
+                                <td class="fw-semibold">@c.Sach.TenSach</td>
+                                <td class="text-center">@c.SoLuong</td>
+                                <td>@(c.TinhTrangMuon ?? "—")</td>
+                                <td>
+                                    @if (isStaff && Model.TrangThai == 1)
+                                    {
+                                        <select name="tinhTrangTra[@c.MaChiTiet]" form="returnForm" class="form-select form-select-sm">
+                                            <option>Bình thường</option>
+                                            <option>Hư hỏng nhẹ</option>
+                                            <option>Hư hỏng nặng</option>
+                                            <option>Mất sách</option>
+                                        </select>
+                                    }
+                                    else { @(c.TinhTrangTra ?? "—") }
+                                </td>
+                                <td class="text-center">@(c.SoNgayQuaHan > 0 ? c.SoNgayQuaHan.ToString() : "—")</td>
+                                <td class="text-end">@(c.TienPhat > 0 ? c.TienPhat.ToString("N0") + " đ" : "—")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-3 d-flex gap-2 flex-wrap">
+            @if (isStaff && Model.TrangThai == 0)
+            {
+                <form asp-action="Duyet" asp-route-id="@Model.MaPhieuMuon" method="post" onsubmit="return confirm('Duyệt phiếu này? Hệ thống sẽ trừ tồn kho.');">
+                    <button class="btn btn-success"><i class="fas fa-check me-1"></i> Duyệt yêu cầu</button>
+                </form>
+                <form asp-action="TuChoi" asp-route-id="@Model.MaPhieuMuon" method="post" onsubmit="return confirm('Từ chối yêu cầu này?');">
+                    <button class="btn btn-outline-danger"><i class="fas fa-xmark me-1"></i> Từ chối</button>
+                </form>
+            }
+            @if (isStaff && Model.TrangThai == 1)
+            {
+                <button type="submit" form="returnForm" class="btn btn-primary" onclick="return confirm('Xác nhận bạn đọc đã trả sách? (Mất sách sẽ bị bồi thường theo đơn giá)');"><i class="fas fa-rotate-left me-1"></i> Nhận trả sách</button>
+            }
+            @if (!isStaff && Model.TrangThai == 0)
+            {
+                <form asp-action="HuyYeuCau" asp-route-id="@Model.MaPhieuMuon" method="post" onsubmit="return confirm('Hủy yêu cầu mượn này?');">
+                    <button class="btn btn-outline-danger"><i class="fas fa-xmark me-1"></i> Hủy yêu cầu</button>
+                </form>
+            }
+        </div>
+    </div>
+</div>

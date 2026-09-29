@@ -1,0 +1,103 @@
+@model QuanLyThuVien.ViewModels.HoSoPageViewModel
+@{
+    ViewData["Title"] = "Hồ sơ cá nhân";
+    var b = Model.BanDoc;
+    bool hetHan = b.HanThe.Date < DateTime.Today;
+}
+
+<h2 class="mb-3"><i class="fas fa-id-card me-2 text-primary"></i> Hồ Sơ Cá Nhân</h2>
+
+<div class="row g-3">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold">Thẻ bạn đọc</div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Mã thẻ</span><strong>#@b.MaBanDoc</strong></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Tên đăng nhập</span><span>@Model.TenDangNhap</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Ngày cấp</span><span>@b.NgayCapThe.ToString("dd/MM/yyyy")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Hạn thẻ</span><span class="@(hetHan ? "text-danger fw-bold" : "")">@b.HanThe.ToString("dd/MM/yyyy")</span></li>
+                <li class="list-group-item d-flex justify-content-between"><span class="text-muted">Trạng thái</span>
+                    @if (!b.TrangThai) { <span class="badge bg-dark">Đã khóa</span> }
+                    else if (hetHan) { <span class="badge bg-danger">Hết hạn</span> }
+                    else { <span class="badge bg-success">Còn hạn</span> }
+                </li>
+            </ul>
+            <div class="card-footer small text-muted">Hạn thẻ và trạng thái do thủ thư quản lý.</div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-3">
+            <div class="card-header bg-white fw-bold"><i class="fas fa-user-pen me-2 text-primary"></i>Thông tin cá nhân</div>
+            <div class="card-body">
+                <form asp-action="CapNhat" method="post" class="row g-3">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="col-md-6">
+                        <label asp-for="HoSo.HoTen" class="form-label required"></label>
+                        <input asp-for="HoSo.HoTen" class="form-control" />
+                        <span asp-validation-for="HoSo.HoTen" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="HoSo.NgaySinh" class="form-label"></label>
+                        <input asp-for="HoSo.NgaySinh" type="date" max="@DateTime.Today.AddDays(-1).ToString("yyyy-MM-dd")" class="form-control" />
+                        <span asp-validation-for="HoSo.NgaySinh" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label d-block">Giới tính</label>
+                        <div class="form-check form-check-inline mt-1">
+                            <input class="form-check-input" type="radio" name="HoSo.GioiTinh" value="true" id="gtNam" checked="@(Model.HoSo.GioiTinh == true)" />
+                            <label class="form-check-label" for="gtNam">Nam</label>
+                        </div>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="radio" name="HoSo.GioiTinh" value="false" id="gtNu" checked="@(Model.HoSo.GioiTinh == false)" />
+                            <label class="form-check-label" for="gtNu">Nữ</label>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="HoSo.SoDienThoai" class="form-label"></label>
+                        <input asp-for="HoSo.SoDienThoai" class="form-control" />
+                        <span asp-validation-for="HoSo.SoDienThoai" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="HoSo.Email" class="form-label"></label>
+                        <input asp-for="HoSo.Email" class="form-control" />
+                        <span asp-validation-for="HoSo.Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="HoSo.DiaChi" class="form-label"></label>
+                        <input asp-for="HoSo.DiaChi" class="form-control" />
+                    </div>
+                    <div class="col-12"><button class="btn btn-primary"><i class="fas fa-save me-1"></i> Lưu thay đổi</button></div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white fw-bold"><i class="fas fa-key me-2 text-primary"></i>Đổi mật khẩu</div>
+            <div class="card-body">
+                <form asp-action="DoiMatKhau" method="post" class="row g-3">
+                    <div class="col-md-4">
+                        <label asp-for="DoiMatKhau.MatKhauCu" class="form-label">Mật khẩu hiện tại</label>
+                        <input asp-for="DoiMatKhau.MatKhauCu" type="password" class="form-control" autocomplete="current-password" />
+                        <span asp-validation-for="DoiMatKhau.MatKhauCu" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="DoiMatKhau.MatKhauMoi" class="form-label">Mật khẩu mới</label>
+                        <input asp-for="DoiMatKhau.MatKhauMoi" type="password" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="DoiMatKhau.MatKhauMoi" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="DoiMatKhau.XacNhan" class="form-label">Xác nhận</label>
+                        <input asp-for="DoiMatKhau.XacNhan" type="password" class="form-control" autocomplete="new-password" />
+                        <span asp-validation-for="DoiMatKhau.XacNhan" class="text-danger"></span>
+                    </div>
+                    <div class="col-12"><button class="btn btn-outline-primary"><i class="fas fa-lock me-1"></i> Đổi mật khẩu</button></div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

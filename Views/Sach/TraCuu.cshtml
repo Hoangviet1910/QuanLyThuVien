@@ -1,0 +1,98 @@
+@model IEnumerable<QuanLyThuVien.Models.Sach>
+@using QuanLyThuVien.ViewModels
+
+@{
+    ViewData["Title"] = "Tra Cứu Sách";
+    int pageNumber = (int)ViewData["PageNumber"]!;
+    int totalPages = (int)ViewData["TotalPages"]!;
+    int totalCount = (int)ViewData["TotalCount"]!;
+    var q = (SachQuery)ViewData["Query"]!;
+    var dangGiu = (HashSet<int>)ViewData["DangGiu"]!;
+    var role = Context.Session.GetInt32("UserRole");
+    string[] covers = { "", "c1", "c2", "c3", "c4" };
+    var pager = new PagerViewModel { Action = "TraCuu", Page = pageNumber, TotalPages = totalPages, Base = q.ToRoute() };
+    ViewData["ShowAdminFilters"] = false;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+        <h2 class="mb-0"><i class="fas fa-search me-2 text-primary"></i> Tra Cứu Sách</h2>
+        <small class="text-muted">Tìm thấy @totalCount đầu sách</small>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form asp-action="TraCuu" method="get" class="row g-2 align-items-end">
+            <partial name="_FilterFields" model="q" view-data="ViewData" />
+            <div class="col-lg-2 col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary flex-fill"><i class="fas fa-search me-1"></i> Tìm</button>
+                <a asp-action="TraCuu" class="btn btn-outline-secondary" title="Xóa bộ lọc"><i class="fas fa-rotate-left"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="card shadow-sm"><div class="card-body text-center text-muted py-5">
+        <i class="fas fa-book-open fa-3x mb-3 opacity-50"></i>
+        <div>Không tìm thấy cuốn sách nào phù hợp.</div>
+    </div></div>
+}
+else
+{
+    <div class="row g-3">
+        @foreach (var s in Model)
+        {
+            var conSach = s.SoLuongCon > 0;
+            var daGiu = dangGiu.Contains(s.MaSach);
+            <div class="col-sm-6 col-lg-4 col-xxl-3">
+                <div class="card book-card shadow-sm h-100">
+                    <div class="book-cover @covers[s.MaTheLoai % covers.Length]"><i class="fas fa-book"></i></div>
+                    <div class="card-body d-flex flex-column">
+                        <span class="badge bg-light text-primary border align-self-start mb-2">@s.TheLoai.TenTheLoai</span>
+                        <h6 class="fw-bold book-title" title="@s.TenSach"><a asp-action="Details" asp-route-id="@s.MaSach" class="text-decoration-none text-body">@s.TenSach</a></h6>
+                        <ul class="list-unstyled small text-muted mb-3">
+                            <li><i class="fas fa-building fa-fw me-1"></i>@s.NhaXuatBan.TenNhaXuatBan</li>
+                            <li><i class="fas fa-calendar fa-fw me-1"></i>Năm XB: @(s.NamXuatBan?.ToString() ?? "—") &middot; @s.DonGia.ToString("N0") đ</li>
+                            @if (!string.IsNullOrWhiteSpace(s.ViTriKeSach))
+                            {
+                                <li><i class="fas fa-location-dot fa-fw me-1"></i>Kệ: @s.ViTriKeSach</li>
+                            }
+                        </ul>
+                        <div class="mt-auto">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                @if (conSach) { <span class="badge bg-success">Còn @s.SoLuongCon/@s.SoLuong cuốn</span> }
+                                else { <span class="badge bg-danger">Hết sách</span> }
+                            </div>
+                            @if (role == 3)
+                            {
+                                if (daGiu)
+                                {
+                                    <button class="btn btn-outline-secondary w-100" disabled><i class="fas fa-check me-1"></i> Đang mượn / chờ duyệt</button>
+                                }
+                                else if (!conSach)
+                                {
+                                    <button class="btn btn-outline-secondary w-100" disabled><i class="fas fa-ban me-1"></i> Tạm hết</button>
+                                }
+                                else
+                                {
+                                    <form asp-controller="PhieuMuon" asp-action="DangKyMuon" method="post"
+                                          onsubmit="return confirm('Gửi yêu cầu mượn cuốn sách này?');">
+                                        <input type="hidden" name="maSach" value="@s.MaSach" />
+                                        <button type="submit" class="btn btn-primary w-100"><i class="fas fa-hand-holding me-1"></i> Mượn sách</button>
+                                    </form>
+                                }
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="mt-4">
+        <partial name="_Pager" model="pager" />
+    </div>
+}

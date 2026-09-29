@@ -1,0 +1,202 @@
+@model QuanLyThuVien.ViewModels.DashboardViewModel
+@{
+    ViewData["Title"] = "Dashboard";
+    var role = Context.Session.GetInt32("UserRole");
+    string[] barColors = { "bg-primary", "bg-success", "bg-info", "bg-warning", "bg-danger", "bg-secondary" };
+}
+
+<div class="page-header mb-4">
+    <h2 class="fw-bold mb-0">
+        <i class="fas fa-chart-line me-2 text-primary"></i>
+        @(role == 1 || role == 2 ? "Dashboard Quản Trị" : "Tổng Quan Bạn Đọc")
+    </h2>
+    <div class="text-muted">Hôm nay: @DateTime.Now.ToString("dddd, dd/MM/yyyy")</div>
+</div>
+
+@if (role == 1 || role == 2)
+{
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-3">
+            <div class="card kpi-card border-start border-primary border-4 shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><div class="text-muted small text-uppercase">Tổng số sách</div><div class="fs-2 fw-bold">@Model.TongSach.ToString("N0")</div></div>
+                    <i class="fas fa-book fa-2x text-primary opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="card kpi-card border-start border-success border-4 shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><div class="text-muted small text-uppercase">Sách khả dụng</div><div class="fs-2 fw-bold">@Model.SachKhaDung.ToString("N0")</div></div>
+                    <i class="fas fa-check-circle fa-2x text-success opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <div class="card kpi-card border-start border-info border-4 shadow-sm h-100">
+                <div class="card-body d-flex justify-content-between align-items-center">
+                    <div><div class="text-muted small text-uppercase">Tổng bạn đọc</div><div class="fs-2 fw-bold">@Model.TongBanDoc.ToString("N0")</div></div>
+                    <i class="fas fa-users fa-2x text-info opacity-50"></i>
+                </div>
+            </div>
+        </div>
+        <div class="col-6 col-xl-3">
+            <a asp-controller="PhieuMuon" asp-action="Index" asp-route-trangThai="0" class="text-decoration-none text-body">
+                <div class="card kpi-card border-start border-warning border-4 shadow-sm h-100">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div><div class="text-muted small text-uppercase">Phiếu chờ duyệt</div><div class="fs-2 fw-bold">@Model.PhieuChoDuyet</div></div>
+                        <i class="fas fa-hourglass-half fa-2x text-warning opacity-50"></i>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-6 col-xl-2"><div class="card shadow-sm h-100"><div class="card-body py-3 text-center"><div class="text-muted small">Thể loại</div><div class="fs-4 fw-bold">@Model.TongTheLoai</div></div></div></div>
+        <div class="col-6 col-xl-2"><div class="card shadow-sm h-100"><div class="card-body py-3 text-center"><div class="text-muted small">Tổng giao dịch</div><div class="fs-4 fw-bold">@Model.TongPhieu</div></div></div></div>
+        <div class="col-6 col-xl-2"><div class="card shadow-sm h-100"><div class="card-body py-3 text-center"><div class="text-muted small">Đang xử lý</div><div class="fs-4 fw-bold text-primary">@Model.PhieuDangMuon</div></div></div></div>
+        <div class="col-6 col-xl-2"><div class="card shadow-sm h-100"><div class="card-body py-3 text-center"><div class="text-muted small">Hoàn thành</div><div class="fs-4 fw-bold text-success">@Model.PhieuHoanThanh</div></div></div></div>
+        <div class="col-6 col-xl-2"><a asp-controller="ThongKe" asp-action="QuaHan" class="text-decoration-none text-body"><div class="card shadow-sm h-100"><div class="card-body py-3 text-center"><div class="text-muted small">Quá hạn</div><div class="fs-4 fw-bold text-danger">@Model.PhieuQuaHan</div></div></div></a></div>
+        <div class="col-6 col-xl-2"><div class="card shadow-sm h-100"><div class="card-body py-3 text-center"><div class="text-muted small">Tổng tiền phạt</div><div class="fs-5 fw-bold">@Model.TongTienPhat.ToString("N0") đ</div></div></div></div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-lg-7">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold"><i class="fas fa-tags me-2 text-primary"></i>Số lượng sách theo thể loại</div>
+                <div class="card-body">
+                    @{ var maxSl = Model.ThongKeTheLoai.Any() ? Math.Max(1, Model.ThongKeTheLoai.Max(t => t.SoLuong)) : 1; int idx = 0; }
+                    @if (!Model.ThongKeTheLoai.Any())
+                    {
+                        <div class="text-muted text-center py-3">Chưa có dữ liệu.</div>
+                    }
+                    @foreach (var t in Model.ThongKeTheLoai)
+                    {
+                        var pct = t.SoLuong * 100 / maxSl;
+                        <div class="mb-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span class="fw-semibold">@t.TenTheLoai</span>
+                                <span class="text-muted">@t.SoDauSach đầu sách &middot; @t.SoLuong cuốn</span>
+                            </div>
+                            <div class="progress" style="height: 12px;">
+                                <div class="progress-bar @barColors[idx++ % barColors.Length]" style="width: @(pct)%"></div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card shadow-sm h-100">
+                <div class="card-header bg-white fw-bold"><i class="fas fa-percentage me-2 text-primary"></i>Tỷ lệ sách đang mượn</div>
+                <div class="card-body text-center">
+                    <div class="donut mx-auto mb-3" style="--pct: @Model.TyLeDangMuon.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                        <div class="donut-inner"><span class="fs-3 fw-bold">@Model.TyLeDangMuon%</span><small class="text-muted">đang mượn</small></div>
+                    </div>
+                    <div class="row small">
+                        <div class="col-4"><div class="fw-bold fs-5">@Model.SachDangMuon</div><div class="text-muted">Đang mượn</div></div>
+                        <div class="col-4"><div class="fw-bold fs-5 text-danger">@Model.PhieuQuaHan</div><div class="text-muted">Phiếu quá hạn</div></div>
+                        <div class="col-4"><div class="fw-bold fs-5 text-success">@Model.SachKhaDung</div><div class="text-muted">Còn trong kho</div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card shadow-sm">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+            <span class="fw-bold"><i class="fas fa-clock-rotate-left me-2 text-primary"></i>Phiếu mượn gần đây</span>
+            <a asp-controller="PhieuMuon" asp-action="Index" class="btn btn-sm btn-outline-primary">Xem tất cả</a>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light"><tr><th>Mã</th><th>Bạn đọc</th><th>Ngày mượn</th><th>Hạn trả</th><th>Trạng thái</th></tr></thead>
+                <tbody>
+                    @foreach (var p in Model.PhieuMoiNhat)
+                    {
+                        <tr>
+                            <td><a asp-controller="PhieuMuon" asp-action="Details" asp-route-id="@p.MaPhieuMuon">#@p.MaPhieuMuon</a></td>
+                            <td>@p.BanDoc.HoTen</td>
+                            <td>@p.NgayMuon.ToString("dd/MM/yyyy")</td>
+                            <td>@p.HanTra.ToString("dd/MM/yyyy")</td>
+                            <td><partial name="_TrangThaiBadge" model="p" /></td>
+                        </tr>
+                    }
+                    @if (!Model.PhieuMoiNhat.Any())
+                    {
+                        <tr><td colspan="5" class="text-center text-muted py-3">Chưa có phiếu mượn nào.</td></tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    if (!Model.CoHoSoBanDoc)
+    {
+        <div class="alert alert-warning"><i class="fas fa-triangle-exclamation me-2"></i>Tài khoản của bạn chưa được liên kết với hồ sơ bạn đọc. Vui lòng liên hệ thủ thư.</div>
+    }
+    else
+    {
+        var bd = Model.BanDoc!;
+        var theHetHan = bd.HanThe.Date < DateTime.Today;
+        <div class="alert @(theHetHan ? "alert-danger" : "alert-info") d-flex align-items-center">
+            <i class="fas fa-id-card fa-lg me-3"></i>
+            <div>
+                Thẻ bạn đọc: <strong>@bd.HoTen</strong> &middot; Cấp ngày @bd.NgayCapThe.ToString("dd/MM/yyyy") &middot; Hạn thẻ <strong>@bd.HanThe.ToString("dd/MM/yyyy")</strong>
+                @if (theHetHan) { <span class="badge bg-danger ms-2">Thẻ đã hết hạn</span> }
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="card kpi-card border-start border-info border-4 shadow-sm h-100"><div class="card-body d-flex justify-content-between align-items-center">
+                    <div><div class="text-muted small text-uppercase">Phiếu đang mượn</div><div class="fs-2 fw-bold">@Model.PhieuDangMuon</div></div><i class="fas fa-book-reader fa-2x text-info opacity-50"></i></div></div>
+            </div>
+            <div class="col-md-4">
+                <div class="card kpi-card border-start border-danger border-4 shadow-sm h-100"><div class="card-body d-flex justify-content-between align-items-center">
+                    <div><div class="text-muted small text-uppercase">Phiếu quá hạn</div><div class="fs-2 fw-bold text-danger">@Model.PhieuQuaHan</div></div><i class="fas fa-exclamation-triangle fa-2x text-danger opacity-50"></i></div></div>
+            </div>
+            <div class="col-md-4">
+                <div class="card kpi-card border-start border-warning border-4 shadow-sm h-100"><div class="card-body d-flex justify-content-between align-items-center">
+                    <div><div class="text-muted small text-uppercase">Yêu cầu chờ duyệt</div><div class="fs-2 fw-bold">@Model.PhieuChoDuyetCuaToi</div></div><i class="fas fa-hourglass-half fa-2x text-warning opacity-50"></i></div></div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <span class="fw-bold"><i class="fas fa-book-open-reader me-2 text-primary"></i>Sách đang mượn</span>
+                <a asp-controller="Sach" asp-action="TraCuu" class="btn btn-sm btn-primary"><i class="fas fa-search me-1"></i>Tra cứu sách</a>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light"><tr><th>Tên sách</th><th>SL</th><th>Ngày mượn</th><th>Hạn trả</th><th>Tình trạng</th></tr></thead>
+                    <tbody>
+                        @foreach (var c in Model.SachDangMuonCuaToi)
+                        {
+                            var quaHan = c.PhieuMuon.HanTra < DateTime.Today;
+                            var conLai = (c.PhieuMuon.HanTra.Date - DateTime.Today).Days;
+                            <tr class="@(quaHan ? "table-danger" : "")">
+                                <td class="fw-semibold">@c.Sach.TenSach</td>
+                                <td>@c.SoLuong</td>
+                                <td>@c.PhieuMuon.NgayMuon.ToString("dd/MM/yyyy")</td>
+                                <td>@c.PhieuMuon.HanTra.ToString("dd/MM/yyyy")</td>
+                                <td>
+                                    @if (quaHan) { <span class="badge bg-danger">Quá hạn @(-conLai) ngày</span> }
+                                    else if (conLai <= 2) { <span class="badge bg-warning text-dark">Còn @conLai ngày</span> }
+                                    else { <span class="badge bg-success">Còn @conLai ngày</span> }
+                                </td>
+                            </tr>
+                        }
+                        @if (!Model.SachDangMuonCuaToi.Any())
+                        {
+                            <tr><td colspan="5" class="text-center text-muted py-4">Bạn hiện không mượn cuốn sách nào.</td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+}

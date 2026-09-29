@@ -1,0 +1,137 @@
+@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var session = HttpContextAccessor.HttpContext?.Session;
+    var isLoggedIn = session?.GetInt32("UserId") != null;
+    var role = session?.GetInt32("UserRole");
+    var curController = ViewContext.RouteData.Values["controller"]?.ToString() ?? "";
+    var curAction = ViewContext.RouteData.Values["action"]?.ToString() ?? "";
+    string Active(string controller, string? action = null) =>
+        curController.Equals(controller, StringComparison.OrdinalIgnoreCase)
+        && (action == null || curAction.Equals(action, StringComparison.OrdinalIgnoreCase)) ? "active" : "";
+    string roleName = role switch { 1 => "Admin", 2 => "Thủ thư", 3 => "Bạn đọc", _ => "" };
+
+    var toasts = new List<(string Key, string Css, string Icon, string Title)>
+    {
+        ("Success", "text-bg-success", "fa-circle-check", "Thành công"),
+        ("Error",   "text-bg-danger",  "fa-circle-xmark", "Lỗi"),
+        ("Warning", "text-bg-warning", "fa-triangle-exclamation", "Lưu ý"),
+        ("Info",    "text-bg-info",    "fa-circle-info", "Thông báo")
+    };
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Quản Lý Thư Viện</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+            <div class="container-fluid">
+                @if (isLoggedIn)
+                {
+                    <button class="navbar-toggler me-2 d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Mở menu">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                }
+                <a class="navbar-brand fw-bold" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="fas fa-book-open me-2"></i>Thư Viện
+                </a>
+                <div class="ms-auto d-flex align-items-center">
+                    @if (isLoggedIn)
+                    {
+                        <span class="text-white me-3 d-none d-sm-inline">
+                            <i class="fas fa-user-circle me-1"></i>@(session?.GetString("UserName"))
+                            <span class="badge bg-light text-primary ms-1">@roleName</span>
+                        </span>
+                        <form asp-controller="TaiKhoan" asp-action="Logout" method="post" class="m-0">
+                            <button type="submit" class="btn btn-light btn-sm"><i class="fas fa-sign-out-alt me-1"></i>Đăng xuất</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="TaiKhoan" asp-action="Login" class="btn btn-light btn-sm">Đăng nhập</a>
+                    }
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container-fluid">
+        <div class="row">
+            @if (isLoggedIn)
+            {
+                <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                    <div class="position-sticky pt-3">
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link @Active("Home")" asp-controller="Home" asp-action="Index"><i class="fas fa-gauge-high"></i> Dashboard</a>
+                            </li>
+                            @if (role == 1 || role == 2)
+                            {
+                                <li class="sidebar-heading">Nghiệp vụ</li>
+                                <li class="nav-item"><a class="nav-link @Active("PhieuMuon")" asp-controller="PhieuMuon" asp-action="Index"><i class="fas fa-right-left"></i> Mượn / Trả sách</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("BanDoc")" asp-controller="BanDoc" asp-action="Index"><i class="fas fa-users"></i> Bạn đọc</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("Sach")" asp-controller="Sach" asp-action="Index"><i class="fas fa-book"></i> Sách</a></li>
+                                <li class="sidebar-heading">Báo cáo</li>
+                                <li class="nav-item"><a class="nav-link @Active("ThongKe", "Index")" asp-controller="ThongKe" asp-action="Index"><i class="fas fa-chart-pie"></i> Thống kê</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("ThongKe", "QuaHan")" asp-controller="ThongKe" asp-action="QuaHan"><i class="fas fa-clock"></i> Xử lý quá hạn</a></li>
+                            }
+                            @if (role == 1)
+                            {
+                                <li class="sidebar-heading">Quản trị hệ thống</li>
+                                <li class="nav-item"><a class="nav-link @Active("TaiKhoan")" asp-controller="TaiKhoan" asp-action="Index"><i class="fas fa-user-shield"></i> Tài khoản</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("TheLoai")" asp-controller="TheLoai" asp-action="Index"><i class="fas fa-tags"></i> Thể loại</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("NhaXuatBan")" asp-controller="NhaXuatBan" asp-action="Index"><i class="fas fa-building"></i> Nhà xuất bản</a></li>
+                            }
+                            @if (role == 3)
+                            {
+                                <li class="nav-item"><a class="nav-link @Active("Sach", "TraCuu")" asp-controller="Sach" asp-action="TraCuu"><i class="fas fa-search"></i> Tra cứu sách</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("PhieuMuon", "LichSu")" asp-controller="PhieuMuon" asp-action="LichSu"><i class="fas fa-clock-rotate-left"></i> Lịch sử mượn</a></li>
+                                <li class="nav-item"><a class="nav-link @Active("HoSo")" asp-controller="HoSo" asp-action="Index"><i class="fas fa-id-card"></i> Hồ sơ cá nhân</a></li>
+                            }
+                        </ul>
+                    </div>
+                </nav>
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 content-wrapper">
+                    @RenderBody()
+                </main>
+            }
+            else
+            {
+                <main class="col-12 content-wrapper">
+                    @RenderBody()
+                </main>
+            }
+        </div>
+    </div>
+
+    <!-- Toast thông báo từ TempData -->
+    <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 1100; margin-top: 56px;">
+        @foreach (var t in toasts)
+        {
+            if (TempData[t.Key] is string msg && !string.IsNullOrWhiteSpace(msg))
+            {
+                <div class="toast align-items-center @t.Css border-0 shadow" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                    <div class="d-flex">
+                        <div class="toast-body"><i class="fas @t.Icon me-2"></i><strong>@t.Title:</strong> @msg</div>
+                        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Đóng"></button>
+                    </div>
+                </div>
+            }
+        }
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.toast').forEach(function (el) { new bootstrap.Toast(el).show(); });
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

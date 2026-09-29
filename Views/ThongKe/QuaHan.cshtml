@@ -1,0 +1,50 @@
+@model IEnumerable<QuanLyThuVien.Models.PhieuMuon>
+@{
+    ViewData["Title"] = "Xử lý quá hạn";
+    decimal phi = (decimal)ViewData["PhiPhat"]!;
+    decimal tongTamTinh = 0;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h2 class="mb-0"><i class="fas fa-clock me-2 text-danger"></i> Phiếu Mượn Quá Hạn</h2>
+        <small class="text-muted">Phạt @phi.ToString("N0") đ / ngày / cuốn</small>
+    </div>
+    <div class="d-flex gap-2">
+        <a asp-action="XuatBaoCao" asp-route-loai="quahan" class="btn btn-outline-success"><i class="fas fa-file-csv me-1"></i> Xuất danh sách</a>
+        <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Thống kê</a>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light"><tr><th>Mã</th><th>Bạn đọc</th><th>Liên hệ</th><th>Sách</th><th>Hạn trả</th><th class="text-center">Quá hạn</th><th class="text-end">Phạt tạm tính</th><th class="text-end">Thao tác</th></tr></thead>
+            <tbody>
+            @foreach (var p in Model)
+            {
+                int ngay = (DateTime.Today - p.HanTra.Date).Days;
+                decimal phat = ngay * phi * p.ChiTietMuons.Sum(c => c.SoLuong);
+                tongTamTinh += phat;
+                <tr>
+                    <td class="fw-bold"><a asp-controller="PhieuMuon" asp-action="Details" asp-route-id="@p.MaPhieuMuon">#@p.MaPhieuMuon</a></td>
+                    <td class="fw-semibold">@p.BanDoc.HoTen</td>
+                    <td class="small">@p.BanDoc.SoDienThoai<br />@p.BanDoc.Email</td>
+                    <td class="small">@foreach (var c in p.ChiTietMuons) { <div>@c.Sach.TenSach</div> }</td>
+                    <td>@p.HanTra.ToString("dd/MM/yyyy")</td>
+                    <td class="text-center"><span class="badge bg-danger">@ngay ngày</span></td>
+                    <td class="text-end text-danger fw-bold">@phat.ToString("N0") đ</td>
+                    <td class="text-end text-nowrap">
+                        <a asp-controller="PhieuMuon" asp-action="Details" asp-route-id="@p.MaPhieuMuon" class="btn btn-sm btn-primary"><i class="fas fa-rotate-left me-1"></i> Xử lý trả</a>
+                    </td>
+                </tr>
+            }
+            @if (!Model.Any()) { <tr><td colspan="8" class="text-center text-success py-5"><i class="fas fa-circle-check fa-2x d-block mb-2"></i>Không có phiếu nào quá hạn.</td></tr> }
+            </tbody>
+            @if (Model.Any())
+            {
+                <tfoot class="table-light"><tr><td colspan="6" class="text-end fw-bold">Tổng phạt tạm tính</td><td class="text-end fw-bold text-danger">@tongTamTinh.ToString("N0") đ</td><td></td></tr></tfoot>
+            }
+        </table>
+    </div>
+</div>

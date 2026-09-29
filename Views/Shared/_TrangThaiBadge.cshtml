@@ -1,0 +1,24 @@
+@model QuanLyThuVien.Models.PhieuMuon
+@{
+    var quaHan = Model.TrangThai == 1 && Model.HanTra < DateTime.Today;
+}
+@if (Model.TrangThai == 0)
+{
+    <span class="badge rounded-pill bg-warning text-dark"><i class="fas fa-hourglass-half me-1"></i>Chờ xử lý</span>
+}
+else if (Model.TrangThai == 1 && quaHan)
+{
+    <span class="badge rounded-pill bg-danger"><i class="fas fa-exclamation-triangle me-1"></i>Quá hạn</span>
+}
+else if (Model.TrangThai == 1)
+{
+    <span class="badge rounded-pill bg-primary"><i class="fas fa-book-reader me-1"></i>Đang mượn</span>
+}
+else if (Model.TrangThai == 2)
+{
+    <span class="badge rounded-pill bg-success"><i class="fas fa-check-circle me-1"></i>Hoàn thành</span>
+}
+else
+{
+    <span class="badge rounded-pill bg-secondary"><i class="fas fa-ban me-1"></i>Hủy / Từ chối</span>
+}

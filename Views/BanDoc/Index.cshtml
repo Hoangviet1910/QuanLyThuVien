@@ -1,0 +1,108 @@
+@model IEnumerable<QuanLyThuVien.Models.BanDoc>
+@using QuanLyThuVien.ViewModels
+
+@{
+    ViewData["Title"] = "Quản Lý Bạn Đọc";
+    int pageNumber = (int)ViewData["PageNumber"]!;
+    int totalPages = (int)ViewData["TotalPages"]!;
+    int totalCount = (int)ViewData["TotalCount"]!;
+    string? theCon = ViewData["CurrentTheCon"] as string;
+    var pager = PagerViewModel.Create("Index", pageNumber, totalPages,
+        ("searchString", ViewData["CurrentFilter"]), ("theCon", theCon));
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h2 class="mb-0"><i class="fas fa-users me-2 text-primary"></i> Quản Lý Bạn Đọc</h2>
+        <small class="text-muted">@totalCount bạn đọc</small>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fas fa-user-plus me-1"></i> Thêm bạn đọc</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="row g-2">
+            <div class="col-md-5">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="fas fa-search"></i></span>
+                    <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Tìm theo tên, SĐT, email..." />
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select name="theCon" class="form-select">
+                    <option value="" selected="@(string.IsNullOrEmpty(theCon))">Tất cả thẻ</option>
+                    <option value="conhan" selected="@(theCon == "conhan")">Thẻ còn hạn</option>
+                    <option value="hethan" selected="@(theCon == "hethan")">Thẻ hết hạn</option>
+                    <option value="khoa" selected="@(theCon == "khoa")">Thẻ bị khóa</option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <button type="submit" class="btn btn-primary">Lọc</button>
+                <a asp-action="Index" class="btn btn-outline-secondary" title="Xóa bộ lọc"><i class="fas fa-rotate-left"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã thẻ</th>
+                    <th>Họ tên</th>
+                    <th>Liên hệ</th>
+                    <th>Ngày cấp</th>
+                    <th>Hạn thẻ</th>
+                    <th>Tài khoản</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var b in Model)
+                {
+                    var hetHan = b.HanThe.Date < DateTime.Today;
+                    <tr>
+                        <td class="fw-bold">#@b.MaBanDoc</td>
+                        <td>
+                            <div class="fw-semibold">@b.HoTen</div>
+                            <small class="text-muted">@(b.GioiTinh == true ? "Nam" : b.GioiTinh == false ? "Nữ" : "")@(b.NgaySinh.HasValue ? " · " + b.NgaySinh.Value.ToString("dd/MM/yyyy") : "")</small>
+                        </td>
+                        <td>
+                            @if (!string.IsNullOrWhiteSpace(b.SoDienThoai)) { <div><i class="fas fa-phone fa-fw text-muted"></i> @b.SoDienThoai</div> }
+                            @if (!string.IsNullOrWhiteSpace(b.Email)) { <div class="small text-muted"><i class="fas fa-envelope fa-fw"></i> @b.Email</div> }
+                        </td>
+                        <td>@b.NgayCapThe.ToString("dd/MM/yyyy")</td>
+                        <td class="@(hetHan ? "text-danger fw-bold" : "")">@b.HanThe.ToString("dd/MM/yyyy")</td>
+                        <td>@(b.TaiKhoan?.TenDangNhap ?? "—")</td>
+                        <td>
+                            @if (!b.TrangThai) { <span class="badge bg-dark">Đã khóa</span> }
+                            else if (hetHan) { <span class="badge bg-danger">Hết hạn thẻ</span> }
+                            else { <span class="badge bg-success">Còn hạn</span> }
+                        </td>
+                        <td class="text-end text-nowrap">
+                            @if (b.TrangThai && !hetHan)
+                            {
+                                <a asp-controller="PhieuMuon" asp-action="Create" asp-route-maBanDoc="@b.MaBanDoc" class="btn btn-sm btn-outline-primary" title="Tạo phiếu mượn"><i class="fas fa-file-circle-plus"></i></a>
+                            }
+                            <a asp-action="Details" asp-route-id="@b.MaBanDoc" class="btn btn-sm btn-outline-secondary" title="Chi tiết"><i class="fas fa-eye"></i></a>
+                            <a asp-action="Edit" asp-route-id="@b.MaBanDoc" class="btn btn-sm btn-warning" title="Sửa / gia hạn thẻ"><i class="fas fa-edit"></i></a>
+                            <form asp-action="Delete" asp-route-id="@b.MaBanDoc" method="post" class="d-inline" onsubmit="return confirm('Xóa bạn đọc này?');">
+                                <button type="submit" class="btn btn-sm btn-danger" title="Xóa"><i class="fas fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="8" class="text-center text-muted py-5">Không tìm thấy bạn đọc nào.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (totalPages > 1)
+    {
+        <div class="card-footer bg-white py-3"><partial name="_Pager" model="pager" /></div>
+    }
+</div>

@@ -1,0 +1,20 @@
+@model QuanLyThuVien.ViewModels.TaiKhoanFormViewModel
+@{ ViewData["Title"] = "Sửa Tài Khoản"; }
+
+<h2><i class="fas fa-user-pen text-warning me-2"></i> Sửa Tài Khoản</h2>
+<hr />
+<div class="row"><div class="col-lg-6">
+    <div class="card shadow"><div class="card-body">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaTaiKhoan" />
+            <partial name="_TkFields" model="Model" />
+            <button type="submit" class="btn btn-warning"><i class="fas fa-save me-1"></i> Cập nhật</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div></div>
+</div></div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

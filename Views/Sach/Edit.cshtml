@@ -1,0 +1,87 @@
+@model QuanLyThuVien.Models.Sach
+
+@{
+    ViewData["Title"] = "Sửa Sách";
+    int dangMuon = Model.SoLuong - Model.SoLuongCon;
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0"><i class="fas fa-pen-to-square me-2 text-warning"></i> Sửa Thông Tin Sách</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-arrow-left me-1"></i> Quay lại</a>
+</div>
+
+<div class="card shadow">
+    <div class="card-body">
+        <form asp-action="Edit" class="row g-3">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="MaSach" />
+
+            <div class="col-md-6">
+                <label asp-for="TenSach" class="form-label required">Tên Sách</label>
+                <input asp-for="TenSach" class="form-control" />
+                <span asp-validation-for="TenSach" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="MaTheLoai" class="form-label required">Thể Loại</label>
+                <select asp-for="MaTheLoai" class="form-select" asp-items="ViewBag.MaTheLoai"></select>
+                <span asp-validation-for="MaTheLoai" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="MaNhaXuatBan" class="form-label required">Nhà Xuất Bản</label>
+                <select asp-for="MaNhaXuatBan" class="form-select" asp-items="ViewBag.MaNhaXuatBan"></select>
+                <span asp-validation-for="MaNhaXuatBan" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="NamXuatBan" class="form-label">Năm XB</label>
+                <input asp-for="NamXuatBan" type="number" class="form-control" />
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="SoLuong" class="form-label required">Tổng Số Lượng</label>
+                <input asp-for="SoLuong" type="number" min="0" class="form-control" />
+                <span asp-validation-for="SoLuong" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label">Đang cho mượn / Còn lại</label>
+                <input class="form-control" value="@dangMuon cuốn / @Model.SoLuongCon cuốn" disabled />
+                <div class="form-text">Số còn lại tự cập nhật theo tổng số lượng.</div>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="DonGia" class="form-label required">Đơn Giá (VNĐ)</label>
+                <input asp-for="DonGia" type="number" step="1000" min="0" class="form-control" />
+                <span asp-validation-for="DonGia" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-3">
+                <label asp-for="ViTriKeSach" class="form-label">Vị Trí Kệ</label>
+                <input asp-for="ViTriKeSach" class="form-control" />
+            </div>
+
+            <div class="col-md-12">
+                <label asp-for="GhiChu" class="form-label">Ghi Chú</label>
+                <textarea asp-for="GhiChu" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="col-md-12">
+                <div class="form-check form-switch">
+                    <input asp-for="TrangThai" class="form-check-input" role="switch" />
+                    <label asp-for="TrangThai" class="form-check-label">Khả dụng (hiển thị cho bạn đọc tra cứu &amp; mượn)</label>
+                </div>
+            </div>
+
+            <div class="col-12 mt-4">
+                <button type="submit" class="btn btn-warning"><i class="fas fa-save me-1"></i> Cập nhật</button>
+                <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

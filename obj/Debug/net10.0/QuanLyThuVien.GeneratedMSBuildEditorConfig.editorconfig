@@ -1,0 +1,191 @@
+is_global = true
+build_property.TargetFramework = net10.0
+build_property.TargetFramework = net10.0
+build_property.TargetPlatformMinVersion = 
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.TargetFrameworkIdentifier = .NETCoreApp
+build_property.TargetFrameworkVersion = v10.0
+build_property.RootNamespace = QuanLyThuVien
+build_property.RootNamespace = QuanLyThuVien
+build_property.ProjectDir = C:\Users\Asus\Downloads\QuanLyThuVien_hoan_thien\
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 
+build_property.RazorLangVersion = 9.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = C:\Users\Asus\Downloads\QuanLyThuVien_hoan_thien
+build_property._RazorSourceGeneratorDebug = 
+build_property.EffectiveAnalysisLevelStyle = 10.0
+build_property.EnableCodeStyleSeverity = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/BanDoc/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuRG9jXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/BanDoc/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuRG9jXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/BanDoc/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuRG9jXEVkaXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/BanDoc/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuRG9jXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/BanDoc/_BanDocFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcQmFuRG9jXF9CYW5Eb2NGaWVsZHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/HoSo/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9Tb1xJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/NhaXuatBan/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhWHVhdEJhblxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/NhaXuatBan/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhWHVhdEJhblxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/NhaXuatBan/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhWHVhdEJhblxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/NhaXuatBan/_NxbFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTmhhWHVhdEJhblxfTnhiRmllbGRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/PhieuMuon/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGhpZXVNdW9uXENyZWF0ZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/PhieuMuon/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGhpZXVNdW9uXERldGFpbHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/PhieuMuon/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGhpZXVNdW9uXEluZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/PhieuMuon/LichSu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcUGhpZXVNdW9uXExpY2hTdS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Sach/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FjaFxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Sach/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FjaFxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Sach/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FjaFxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Sach/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FjaFxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Sach/TraCuu.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FjaFxUcmFDdXUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Sach/_FilterFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2FjaFxfRmlsdGVyRmllbGRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Shared/_Pager.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9QYWdlci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Shared/_TrangThaiBadge.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9UcmFuZ1RoYWlCYWRnZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TaiKhoan/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpS2hvYW5cQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TaiKhoan/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpS2hvYW5cRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TaiKhoan/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpS2hvYW5cSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TaiKhoan/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpS2hvYW5cTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TaiKhoan/_TkFields.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGFpS2hvYW5cX1RrRmllbGRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TheLoai/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGhlTG9haVxDcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TheLoai/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGhlTG9haVxEZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TheLoai/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGhlTG9haVxFZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/TheLoai/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGhlTG9haVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/ThongKe/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGhvbmdLZVxJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/ThongKe/QuaHan.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcVGhvbmdLZVxRdWFIYW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[C:/Users/Asus/Downloads/QuanLyThuVien_hoan_thien/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-ylxhx44hye

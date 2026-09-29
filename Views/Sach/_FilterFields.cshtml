@@ -1,0 +1,63 @@
+@model QuanLyThuVien.ViewModels.SachQuery
+@* Các điều kiện lọc dùng chung: Index (quản lý) và TraCuu (bạn đọc) *@
+@{ bool admin = (bool)(ViewData["ShowAdminFilters"] ?? false); }
+
+<div class="col-lg-4">
+    <label class="form-label small text-muted mb-1">Từ khóa (tên sách, thể loại, NXB)</label>
+    <input type="text" name="SearchString" value="@Model.SearchString" class="form-control" placeholder="Nhập từ khóa..." />
+</div>
+<div class="col-lg-2 col-md-4">
+    <label class="form-label small text-muted mb-1">Thể loại</label>
+    <select name="TheLoaiId" asp-items="ViewBag.TheLoaiId" class="form-select"><option value="">-- Tất cả --</option></select>
+</div>
+@if (admin)
+{
+    <div class="col-lg-2 col-md-4">
+        <label class="form-label small text-muted mb-1">Nhà xuất bản</label>
+        <select name="NhaXuatBanId" asp-items="ViewBag.NhaXuatBanId" class="form-select"><option value="">-- Tất cả --</option></select>
+    </div>
+}
+<div class="col-lg-2 col-md-4">
+    <label class="form-label small text-muted mb-1">Năm xuất bản</label>
+    <input type="number" name="NamXuatBan" value="@Model.NamXuatBan" class="form-control" min="1000" max="2100" placeholder="VD: 2020" />
+</div>
+<div class="col-lg-2 col-md-4">
+    <label class="form-label small text-muted mb-1">Tình trạng</label>
+    <select name="TinhTrang" class="form-select">
+        <option value="" selected="@(string.IsNullOrEmpty(Model.TinhTrang))">Tất cả</option>
+        <option value="con" selected="@(Model.TinhTrang == "con")">Còn sách</option>
+        <option value="het" selected="@(Model.TinhTrang == "het")">Hết sách / Khóa</option>
+    </select>
+</div>
+@if (admin)
+{
+    <div class="col-lg-2 col-md-4">
+        <label class="form-label small text-muted mb-1">Trạng thái</label>
+        <select name="TrangThai" class="form-select">
+            <option value="" selected="@(string.IsNullOrEmpty(Model.TrangThai))">Tất cả</option>
+            <option value="hienthi" selected="@(Model.TrangThai == "hienthi")">Đang hiển thị</option>
+            <option value="khoa" selected="@(Model.TrangThai == "khoa")">Đã khóa</option>
+        </select>
+    </div>
+}
+<div class="col-lg-2 col-md-4">
+    <label class="form-label small text-muted mb-1">Giá từ (đ)</label>
+    <input type="number" name="GiaTu" value="@Model.GiaTu" class="form-control" min="0" step="1000" />
+</div>
+<div class="col-lg-2 col-md-4">
+    <label class="form-label small text-muted mb-1">Giá đến (đ)</label>
+    <input type="number" name="GiaDen" value="@Model.GiaDen" class="form-control" min="0" step="1000" />
+</div>
+<div class="col-lg-2 col-md-4">
+    <label class="form-label small text-muted mb-1">Sắp xếp</label>
+    <select name="SortOrder" class="form-select">
+        <option value="" selected="@(string.IsNullOrEmpty(Model.SortOrder))">Tên A → Z</option>
+        <option value="name_desc" selected="@(Model.SortOrder == "name_desc")">Tên Z → A</option>
+        <option value="year" selected="@(Model.SortOrder == "year")">Năm XB tăng dần</option>
+        <option value="year_desc" selected="@(Model.SortOrder == "year_desc")">Năm XB giảm dần</option>
+        <option value="price" selected="@(Model.SortOrder == "price")">Đơn giá tăng dần</option>
+        <option value="price_desc" selected="@(Model.SortOrder == "price_desc")">Đơn giá giảm dần</option>
+        <option value="con" selected="@(Model.SortOrder == "con")">Số lượng còn tăng dần</option>
+        <option value="con_desc" selected="@(Model.SortOrder == "con_desc")">Số lượng còn giảm dần</option>
+    </select>
+</div>

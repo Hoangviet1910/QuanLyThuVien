@@ -1,0 +1,91 @@
+@model QuanLyThuVien.ViewModels.ThongKeViewModel
+@using System.Text.Json
+@{
+    ViewData["Title"] = "Thống kê";
+    var thangLabels = JsonSerializer.Serialize(Model.LuotMuonTheoThang.Select(t => t.Thang));
+    var thangPhieu = JsonSerializer.Serialize(Model.LuotMuonTheoThang.Select(t => t.SoPhieu));
+    var thangCuon = JsonSerializer.Serialize(Model.LuotMuonTheoThang.Select(t => t.SoCuon));
+    var tlLabels = JsonSerializer.Serialize(Model.SachTheoTheLoai.Select(t => t.TenTheLoai));
+    var tlData = JsonSerializer.Serialize(Model.SachTheoTheLoai.Select(t => t.SoLuong));
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <h2 class="mb-0"><i class="fas fa-chart-pie me-2 text-primary"></i> Thống Kê &amp; Báo Cáo</h2>
+    <div class="d-flex gap-2">
+        <a asp-action="QuaHan" class="btn btn-outline-danger"><i class="fas fa-clock me-1"></i> Xử lý quá hạn</a>
+        <a asp-action="XuatBaoCao" asp-route-loai="phieu" class="btn btn-outline-success"><i class="fas fa-file-csv me-1"></i> Xuất báo cáo phiếu mượn</a>
+    </div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-6 col-lg-3"><div class="card shadow-sm border-start border-primary border-4"><div class="card-body py-3">
+        <div class="text-muted small text-uppercase">Tổng giao dịch</div><div class="fs-3 fw-bold">@Model.TongPhieu</div>
+        <div class="small text-muted">@Model.ChoXuLy chờ · @Model.DangXuLy đang xử lý · @Model.HoanThanh xong · @Model.HuyTuChoi hủy</div></div></div></div>
+    <div class="col-6 col-lg-3"><div class="card shadow-sm border-start border-danger border-4"><div class="card-body py-3">
+        <div class="text-muted small text-uppercase">Phiếu quá hạn (đang mượn)</div><div class="fs-3 fw-bold text-danger">@Model.QuaHanDangMuon</div>
+        <div class="small text-muted">+ @Model.TraTre phiếu đã trả trễ</div></div></div></div>
+    <div class="col-6 col-lg-3"><div class="card shadow-sm border-start border-warning border-4"><div class="card-body py-3">
+        <div class="text-muted small text-uppercase">Tổng tiền phạt</div><div class="fs-3 fw-bold">@Model.TongTienPhat.ToString("N0") đ</div>
+        <div class="small text-muted">Từ các phiếu đã hoàn thành</div></div></div></div>
+    <div class="col-6 col-lg-3"><div class="card shadow-sm border-start border-success border-4"><div class="card-body py-3">
+        <div class="text-muted small text-uppercase">Tỷ lệ trả đúng hạn</div><div class="fs-3 fw-bold text-success">@Model.TyLeDungHan%</div>
+        <div class="small text-muted">@Model.TraDungHan / @Model.DaTra phiếu đã trả</div></div></div></div>
+</div>
+
+<div class="row g-3 mb-3">
+    <div class="col-lg-8"><div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold"><i class="fas fa-chart-column me-2 text-primary"></i>Số lượt mượn theo tháng (12 tháng gần nhất)</div>
+        <div class="card-body"><canvas id="chartThang" height="110"></canvas></div>
+    </div></div>
+    <div class="col-lg-4"><div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold"><i class="fas fa-tags me-2 text-primary"></i>Số sách theo thể loại</div>
+        <div class="card-body"><canvas id="chartTheLoai"></canvas></div>
+    </div></div>
+</div>
+
+<div class="row g-3">
+    <div class="col-lg-6"><div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold"><i class="fas fa-trophy me-2 text-warning"></i>Sách được mượn nhiều nhất</div>
+        <table class="table mb-0"><thead class="table-light"><tr><th>#</th><th>Tên sách</th><th class="text-end">Số lượt</th></tr></thead><tbody>
+        @{ int i = 1; }
+        @foreach (var t in Model.TopSach) { <tr><td>@(i++)</td><td>@t.Ten</td><td class="text-end fw-bold">@t.SoLuot</td></tr> }
+        @if (!Model.TopSach.Any()) { <tr><td colspan="3" class="text-center text-muted py-3">Chưa có dữ liệu.</td></tr> }
+        </tbody></table>
+    </div></div>
+    <div class="col-lg-6"><div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold"><i class="fas fa-user-graduate me-2 text-warning"></i>Bạn đọc mượn nhiều nhất</div>
+        <table class="table mb-0"><thead class="table-light"><tr><th>#</th><th>Bạn đọc</th><th class="text-end">Số phiếu</th></tr></thead><tbody>
+        @{ int j = 1; }
+        @foreach (var t in Model.TopBanDoc) { <tr><td>@(j++)</td><td>@t.Ten</td><td class="text-end fw-bold">@t.SoLuot</td></tr> }
+        @if (!Model.TopBanDoc.Any()) { <tr><td colspan="3" class="text-center text-muted py-3">Chưa có dữ liệu.</td></tr> }
+        </tbody></table>
+    </div></div>
+</div>
+
+<div class="card shadow-sm mt-3">
+    <div class="card-header bg-white fw-bold"><i class="fas fa-table me-2 text-primary"></i>Chi tiết số sách theo thể loại</div>
+    <table class="table mb-0"><thead class="table-light"><tr><th>Thể loại</th><th class="text-end">Số đầu sách</th><th class="text-end">Tổng số cuốn</th></tr></thead><tbody>
+    @foreach (var t in Model.SachTheoTheLoai) { <tr><td>@t.TenTheLoai</td><td class="text-end">@t.SoDauSach</td><td class="text-end">@t.SoLuong</td></tr> }
+    </tbody></table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script>
+        new Chart(document.getElementById('chartThang'), {
+            type: 'bar',
+            data: {
+                labels: @Html.Raw(thangLabels),
+                datasets: [
+                    { label: 'Số phiếu', data: @Html.Raw(thangPhieu), backgroundColor: '#0d6efd' },
+                    { label: 'Số cuốn', data: @Html.Raw(thangCuon), backgroundColor: '#20c997' }
+                ]
+            },
+            options: { scales: { y: { beginAtZero: true, ticks: { precision: 0 } } } }
+        });
+        new Chart(document.getElementById('chartTheLoai'), {
+            type: 'doughnut',
+            data: { labels: @Html.Raw(tlLabels), datasets: [{ data: @Html.Raw(tlData) }] }
+        });
+    </script>
+}

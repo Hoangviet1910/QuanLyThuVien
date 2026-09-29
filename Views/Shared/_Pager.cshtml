@@ -1,0 +1,32 @@
+@model QuanLyThuVien.ViewModels.PagerViewModel
+@if (Model.TotalPages > 1)
+{
+    int start = Math.Max(1, Model.Page - 2);
+    int end = Math.Min(Model.TotalPages, Model.Page + 2);
+    <nav aria-label="Phân trang">
+        <ul class="pagination justify-content-center mb-0">
+            <li class="page-item @(Model.Page <= 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.Route(Model.Page - 1)"><i class="fas fa-chevron-left"></i> Trước</a>
+            </li>
+            @if (start > 1)
+            {
+                <li class="page-item"><a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.Route(1)">1</a></li>
+                if (start > 2) { <li class="page-item disabled"><span class="page-link">…</span></li> }
+            }
+            @for (int i = start; i <= end; i++)
+            {
+                <li class="page-item @(i == Model.Page ? "active" : "")">
+                    <a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.Route(i)">@i</a>
+                </li>
+            }
+            @if (end < Model.TotalPages)
+            {
+                if (end < Model.TotalPages - 1) { <li class="page-item disabled"><span class="page-link">…</span></li> }
+                <li class="page-item"><a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.Route(Model.TotalPages)">@Model.TotalPages</a></li>
+            }
+            <li class="page-item @(Model.Page >= Model.TotalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="@Model.Action" asp-all-route-data="Model.Route(Model.Page + 1)">Sau <i class="fas fa-chevron-right"></i></a>
+            </li>
+        </ul>
+    </nav>
+}

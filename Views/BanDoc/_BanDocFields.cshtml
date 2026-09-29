@@ -1,0 +1,54 @@
+@model QuanLyThuVien.Models.BanDoc
+
+<div class="col-md-6">
+    <label asp-for="HoTen" class="form-label required">Họ và tên</label>
+    <input asp-for="HoTen" class="form-control" />
+    <span asp-validation-for="HoTen" class="text-danger"></span>
+</div>
+<div class="col-md-3">
+    <label asp-for="NgaySinh" class="form-label">Ngày sinh</label>
+    <input asp-for="NgaySinh" type="date" class="form-control" />
+    <span asp-validation-for="NgaySinh" class="text-danger"></span>
+</div>
+<div class="col-md-3">
+    <label asp-for="GioiTinh" class="form-label">Giới tính</label>
+    <select asp-for="GioiTinh" class="form-select">
+        <option value="">-- Chưa chọn --</option>
+        <option value="true">Nam</option>
+        <option value="false">Nữ</option>
+    </select>
+</div>
+<div class="col-md-4">
+    <label asp-for="SoDienThoai" class="form-label">Số điện thoại</label>
+    <input asp-for="SoDienThoai" class="form-control" />
+    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+</div>
+<div class="col-md-4">
+    <label asp-for="Email" class="form-label">Email</label>
+    <input asp-for="Email" class="form-control" />
+    <span asp-validation-for="Email" class="text-danger"></span>
+</div>
+<div class="col-md-4">
+    <label asp-for="DiaChi" class="form-label">Địa chỉ</label>
+    <input asp-for="DiaChi" class="form-control" />
+</div>
+<div class="col-md-3">
+    <label asp-for="NgayCapThe" class="form-label required">Ngày cấp thẻ</label>
+    <input asp-for="NgayCapThe" type="date" class="form-control" />
+    <span asp-validation-for="NgayCapThe" class="text-danger"></span>
+</div>
+<div class="col-md-3">
+    <label asp-for="HanThe" class="form-label required">Hạn thẻ</label>
+    <input asp-for="HanThe" type="date" class="form-control" />
+    <span asp-validation-for="HanThe" class="text-danger"></span>
+</div>
+<div class="col-md-6">
+    <label asp-for="GhiChu" class="form-label">Ghi chú</label>
+    <input asp-for="GhiChu" class="form-control" />
+</div>
+<div class="col-12">
+    <div class="form-check form-switch">
+        <input asp-for="TrangThai" class="form-check-input" role="switch" />
+        <label asp-for="TrangThai" class="form-check-label">Thẻ đang hoạt động (tắt = khóa thẻ và khóa đăng nhập)</label>
+    </div>
+</div>

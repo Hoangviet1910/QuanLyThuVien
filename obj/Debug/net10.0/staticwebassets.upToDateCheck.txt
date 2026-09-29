@@ -1,0 +1,6 @@
+wwwroot\css\site.css
+wwwroot\favicon.ico
+wwwroot\js\site.js
+C:\Users\Asus\Downloads\QuanLyThuVien_hoan_thien\wwwroot\css\site.css
+C:\Users\Asus\Downloads\QuanLyThuVien_hoan_thien\wwwroot\favicon.ico
+C:\Users\Asus\Downloads\QuanLyThuVien_hoan_thien\wwwroot\js\site.js

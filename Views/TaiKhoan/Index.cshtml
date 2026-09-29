@@ -1,0 +1,79 @@
+@model IEnumerable<QuanLyThuVien.Models.TaiKhoan>
+@using QuanLyThuVien.ViewModels
+@{
+    ViewData["Title"] = "Quản Lý Tài Khoản";
+    int pageNumber = (int)ViewData["PageNumber"]!;
+    int totalPages = (int)ViewData["TotalPages"]!;
+    int? vaiTro = ViewData["CurrentVaiTro"] as int?;
+    bool? trangThai = ViewData["CurrentTrangThai"] as bool?;
+    int? me = ViewData["CurrentUserId"] as int?;
+    var pager = PagerViewModel.Create("Index", pageNumber, totalPages,
+        ("searchString", ViewData["CurrentFilter"]), ("vaiTro", vaiTro), ("trangThai", trangThai));
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <div><h2 class="mb-0"><i class="fas fa-user-shield me-2 text-primary"></i> Quản Lý Tài Khoản</h2><small class="text-muted">@ViewData["TotalCount"] tài khoản</small></div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fas fa-user-plus me-1"></i> Thêm tài khoản</a>
+</div>
+
+<div class="card shadow-sm mb-3"><div class="card-body">
+    <form asp-action="Index" method="get" class="row g-2">
+        <div class="col-md-4"><input name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="Tên đăng nhập, họ tên, email..." /></div>
+        <div class="col-md-2">
+            <select name="vaiTro" class="form-select">
+                <option value="">Mọi vai trò</option>
+                <option value="1" selected="@(vaiTro == 1)">Admin</option>
+                <option value="2" selected="@(vaiTro == 2)">Thủ thư</option>
+                <option value="3" selected="@(vaiTro == 3)">Bạn đọc</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <select name="trangThai" class="form-select">
+                <option value="">Mọi trạng thái</option>
+                <option value="true" selected="@(trangThai == true)">Hoạt động</option>
+                <option value="false" selected="@(trangThai == false)">Đã khóa</option>
+            </select>
+        </div>
+        <div class="col-auto">
+            <button class="btn btn-primary">Lọc</button>
+            <a asp-action="Index" class="btn btn-outline-secondary"><i class="fas fa-rotate-left"></i></a>
+        </div>
+    </form>
+</div></div>
+
+<div class="card shadow"><div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+        <thead class="table-light"><tr><th>Tên đăng nhập</th><th>Họ tên</th><th>Email</th><th>Vai trò</th><th>Trạng thái</th><th class="text-end">Thao tác</th></tr></thead>
+        <tbody>
+        @foreach (var t in Model)
+        {
+            <tr>
+                <td class="fw-bold">@t.TenDangNhap @if (t.MaTaiKhoan == me) { <span class="badge bg-info">Bạn</span> }</td>
+                <td>@t.HoTen</td>
+                <td>@t.Email</td>
+                <td>
+                    @if (t.VaiTro == 1) { <span class="badge bg-danger">Admin</span> }
+                    else if (t.VaiTro == 2) { <span class="badge bg-primary">Thủ thư</span> }
+                    else { <span class="badge bg-secondary">Bạn đọc</span> }
+                </td>
+                <td>@if (t.TrangThai) { <span class="badge bg-success">Hoạt động</span> } else { <span class="badge bg-dark">Đã khóa</span> }</td>
+                <td class="text-end text-nowrap">
+                    <a asp-action="Edit" asp-route-id="@t.MaTaiKhoan" class="btn btn-sm btn-warning" title="Sửa"><i class="fas fa-edit"></i></a>
+                    @if (t.MaTaiKhoan != me)
+                    {
+                        <form asp-action="ToggleStatus" asp-route-id="@t.MaTaiKhoan" method="post" class="d-inline">
+                            <button class="btn btn-sm @(t.TrangThai ? "btn-outline-dark" : "btn-outline-success")" title="@(t.TrangThai ? "Khóa" : "Mở khóa")"><i class="fas @(t.TrangThai ? "fa-lock" : "fa-lock-open")"></i></button>
+                        </form>
+                        <form asp-action="Delete" asp-route-id="@t.MaTaiKhoan" method="post" class="d-inline" onsubmit="return confirm('Xóa tài khoản này?');">
+                            <button class="btn btn-sm btn-danger" title="Xóa"><i class="fas fa-trash"></i></button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+        @if (!Model.Any()) { <tr><td colspan="6" class="text-center text-muted py-4">Không có tài khoản nào.</td></tr> }
+        </tbody>
+    </table>
+</div>
+@if (totalPages > 1) { <div class="card-footer bg-white py-3"><partial name="_Pager" model="pager" /></div> }
+</div>

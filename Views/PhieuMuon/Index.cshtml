@@ -1,0 +1,196 @@
+@model IEnumerable<QuanLyThuVien.Models.PhieuMuon>
+@using QuanLyThuVien.ViewModels
+
+@{
+    ViewData["Title"] = "Quản Lý Mượn Trả";
+    int pageNumber = (int)ViewData["PageNumber"]!;
+    int totalPages = (int)ViewData["TotalPages"]!;
+    int totalCount = (int)ViewData["TotalCount"]!;
+    int? current = ViewData["CurrentTrangThai"] as int?;
+    var counts = (Dictionary<int, int>)ViewData["Counts"]!;
+    int C(int k) => counts.TryGetValue(k, out var v) ? v : 0;
+    int tatCa = C(0) + C(1) + C(2) + C(3);
+    string? sortOrder = ViewData["CurrentSort"] as string;
+    var baseRoute = new Dictionary<string, string>();
+    void Put(string k, object? v) { var t = v?.ToString(); if (!string.IsNullOrEmpty(t)) baseRoute[k] = t; }
+    Put("searchString", ViewData["CurrentFilter"]); Put("theLoaiId", ViewData["CurrentTheLoai"]);
+    Put("tuNgay", ViewData["TuNgay"]); Put("denNgay", ViewData["DenNgay"]); Put("sortOrder", sortOrder);
+    Dictionary<string, string> TabRoute(int? k) { var d = new Dictionary<string, string>(baseRoute); if (k.HasValue) d["trangThai"] = k.Value.ToString(); return d; }
+    var pager = new PagerViewModel { Action = "Index", Page = pageNumber, TotalPages = totalPages, Base = TabRoute(current) };
+
+    var tabs = new List<(int? Key, string Text, int Count, string Icon)>
+    {
+        (null, "Tất cả", tatCa, "fa-list"),
+        (0, "Chờ xử lý", C(0), "fa-hourglass-half"),
+        (1, "Đang xử lý (đang mượn)", C(1), "fa-book-reader"),
+        (4, "Quá hạn", C(4), "fa-exclamation-triangle"),
+        (2, "Hoàn thành", C(2), "fa-check-circle"),
+        (3, "Hủy / Từ chối", C(3), "fa-ban")
+    };
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+    <div>
+        <h2 class="mb-0"><i class="fas fa-right-left me-2 text-primary"></i> Quản Lý Mượn / Trả Sách</h2>
+        <small class="text-muted">@totalCount phiếu</small>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="fas fa-plus me-1"></i> Tạo phiếu mượn</a>
+</div>
+
+<div class="card shadow-sm mb-3">
+    <div class="card-body">
+        <ul class="nav nav-pills mb-3 flex-wrap gap-1">
+            @foreach (var t in tabs)
+            {
+                <li class="nav-item">
+                    <a class="nav-link py-1 px-3 @(current == t.Key ? "active" : "")" asp-action="Index"
+                       asp-all-route-data="TabRoute(t.Key)">
+                        <i class="fas @t.Icon me-1"></i>@t.Text
+                        <span class="badge @(current == t.Key ? "bg-light text-primary" : "bg-secondary") ms-1">@t.Count</span>
+                    </a>
+                </li>
+            }
+        </ul>
+        <form asp-action="Index" method="get" class="row g-2 align-items-end">
+            <input type="hidden" name="trangThai" value="@current" />
+            <div class="col-lg-3 col-md-6">
+                <label class="form-label small text-muted mb-1">Bạn đọc / mã phiếu / tên sách</label>
+                <input type="text" name="searchString" value="@ViewData["CurrentFilter"]" class="form-control" placeholder="VD: Nguyễn, #12, Clean Code..." />
+            </div>
+            <div class="col-lg-2 col-md-6">
+                <label class="form-label small text-muted mb-1">Thể loại sách</label>
+                <select name="theLoaiId" asp-items="ViewBag.TheLoaiId" class="form-select"><option value="">-- Tất cả --</option></select>
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <label class="form-label small text-muted mb-1">Từ ngày mượn</label>
+                <input type="date" name="tuNgay" value="@ViewData["TuNgay"]" class="form-control" />
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <label class="form-label small text-muted mb-1">Đến ngày</label>
+                <input type="date" name="denNgay" value="@ViewData["DenNgay"]" class="form-control" />
+            </div>
+            <div class="col-lg-2 col-md-4">
+                <label class="form-label small text-muted mb-1">Sắp xếp</label>
+                <select name="sortOrder" class="form-select">
+                    <option value="" selected="@(string.IsNullOrEmpty(sortOrder))">Ngày mượn mới nhất</option>
+                    <option value="date" selected="@(sortOrder == "date")">Ngày mượn cũ nhất</option>
+                    <option value="name" selected="@(sortOrder == "name")">Tên bạn đọc A → Z</option>
+                    <option value="name_desc" selected="@(sortOrder == "name_desc")">Tên bạn đọc Z → A</option>
+                </select>
+            </div>
+            <div class="col-lg-1 col-md-12 d-flex gap-1">
+                <button type="submit" class="btn btn-primary flex-fill" title="Lọc"><i class="fas fa-search"></i></button>
+                <a asp-action="Index" class="btn btn-outline-secondary" title="Xóa bộ lọc"><i class="fas fa-rotate-left"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card shadow">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Mã</th>
+                    <th>Bạn đọc</th>
+                    <th>Sách mượn</th>
+                    <th>Ngày mượn</th>
+                    <th>Hạn trả</th>
+                    <th>Ngày trả</th>
+                    <th class="text-end">Tiền phạt</th>
+                    <th>Trạng thái</th>
+                    <th class="text-end">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr class="@(p.TrangThai == 1 && p.HanTra < DateTime.Today ? "table-danger" : "")">
+                        <td class="fw-bold"><a asp-action="Details" asp-route-id="@p.MaPhieuMuon">#@p.MaPhieuMuon</a></td>
+                        <td>
+                            <div class="fw-semibold">@p.BanDoc.HoTen</div>
+                            <small class="text-muted">Thẻ #@p.MaBanDoc</small>
+                        </td>
+                        <td style="max-width: 260px;">
+                            @foreach (var ct in p.ChiTietMuons.Take(2))
+                            {
+                                <div class="text-truncate small" title="@ct.Sach.TenSach"><i class="fas fa-book text-muted me-1"></i>@ct.Sach.TenSach</div>
+                            }
+                            @if (p.ChiTietMuons.Count > 2)
+                            {
+                                <small class="text-muted">+@(p.ChiTietMuons.Count - 2) cuốn khác</small>
+                            }
+                        </td>
+                        <td>@p.NgayMuon.ToString("dd/MM/yyyy")</td>
+                        <td>@p.HanTra.ToString("dd/MM/yyyy")</td>
+                        <td>@(p.NgayTra?.ToString("dd/MM/yyyy") ?? "—")</td>
+                        <td class="text-end">
+                            @if (p.TienPhat > 0) { <span class="text-danger fw-bold">@p.TienPhat.ToString("N0") đ</span> }
+                            else { <span class="text-muted">—</span> }
+                        </td>
+                        <td><partial name="_TrangThaiBadge" model="p" /></td>
+                        <td class="text-end text-nowrap">
+                            <a asp-action="Details" asp-route-id="@p.MaPhieuMuon" class="btn btn-sm btn-outline-secondary" title="Chi tiết"><i class="fas fa-eye"></i></a>
+                            @if (p.TrangThai == 0)
+                            {
+                                <form asp-action="Duyet" asp-route-id="@p.MaPhieuMuon" method="post" class="d-inline"
+                                      onsubmit="return confirm('Duyệt phiếu #@(p.MaPhieuMuon)? Hệ thống sẽ trừ tồn kho.');">
+                                    <button type="submit" class="btn btn-sm btn-success" title="Duyệt"><i class="fas fa-check"></i> Duyệt</button>
+                                </form>
+                                <button type="button" class="btn btn-sm btn-outline-danger btn-reject" data-id="@p.MaPhieuMuon" title="Từ chối"><i class="fas fa-xmark"></i></button>
+                            }
+                            else if (p.TrangThai == 1)
+                            {
+                                <form asp-action="ReturnBooks" asp-route-id="@p.MaPhieuMuon" method="post" class="d-inline"
+                                      onsubmit="return confirm('Xác nhận bạn đọc đã trả sách cho phiếu #@(p.MaPhieuMuon)?');">
+                                    <button type="submit" class="btn btn-sm btn-primary" title="Trả sách"><i class="fas fa-rotate-left"></i> Trả sách</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (!Model.Any())
+                {
+                    <tr><td colspan="9" class="text-center text-muted py-5"><i class="fas fa-inbox fa-2x mb-2 d-block opacity-50"></i>Không có phiếu mượn nào.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    @if (totalPages > 1)
+    {
+        <div class="card-footer bg-white py-3"><partial name="_Pager" model="pager" /></div>
+    }
+</div>
+
+<!-- Modal từ chối -->
+<div class="modal fade" id="rejectModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <form asp-action="TuChoi" method="post" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="fas fa-ban text-danger me-2"></i>Từ chối phiếu <span id="rejectLabel"></span></h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" name="id" id="rejectId" />
+                <label class="form-label">Lý do từ chối (không bắt buộc)</label>
+                <textarea name="lyDo" class="form-control" rows="3" maxlength="200" placeholder="VD: Sách đang được giữ chỗ..."></textarea>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                <button type="submit" class="btn btn-danger">Xác nhận từ chối</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('.btn-reject').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                document.getElementById('rejectId').value = btn.dataset.id;
+                document.getElementById('rejectLabel').textContent = '#' + btn.dataset.id;
+                new bootstrap.Modal(document.getElementById('rejectModal')).show();
+            });
+        });
+    </script>
+}
